@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
 
 export default function LotteryEntrance() {
-    const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
+    const { isLoading, isFetching, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
     // These get re-rendered every time due to our connect button!
     const chainId = parseInt(chainIdHex);
     // console.log(`ChainId is ${chainId}`)
@@ -115,9 +115,11 @@ export default function LotteryEntrance() {
                                 onError: (error) => console.log(error),
                             })
                         }
-                        //disabled={isLoading || isFetching}
+                        disabled={isLoading || isFetching}
                     >
-                        Enter DeKino
+                        {isLoading || isFetching ? (
+                        <div classname="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
+                        ) : (<div> Enter DeKino </div>)}
                     </button>
                     <div>Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH</div>
                     <div>The current number of players is: {numberOfPlayers}</div>
