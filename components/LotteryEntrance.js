@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
 
 export default function LotteryEntrance() {
-    const { isLoading, isFetching, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
+    const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
     // These get re-rendered every time due to our connect button!
     const chainId = parseInt(chainIdHex);
     // console.log(`ChainId is ${chainId}`)
@@ -19,7 +19,7 @@ export default function LotteryEntrance() {
 
     const dispatch = useNotification();
 
-    const { runContractFunction: enterDeKino } = useWeb3Contract({
+    const { runContractFunction: enterDeKino, isLoading, isFetching } = useWeb3Contract({
         abi: abi,
         contractAddress: deKinoAddress,
         functionName: "enterDeKino",
