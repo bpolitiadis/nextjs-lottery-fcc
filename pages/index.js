@@ -3,6 +3,7 @@ import styles from "../styles/Home.module.css";
 import ManualHeader from "../components/ManualHeader";
 import Header from "../components/Header";
 import LotteryEntrance from "../components/LotteryEntrance";
+import Info from "../components/Info";
 
 export default function Home() {
     return (
@@ -15,10 +16,11 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            {/* header / connect button / nav bar */}
-            {/* <ManualHeader/> */}
             <Header />
-            <LotteryEntrance/>
+            <div className={styles.main}>
+                <LotteryEntrance />
+                <Info />
+            </div>
         </div>
     );
 }

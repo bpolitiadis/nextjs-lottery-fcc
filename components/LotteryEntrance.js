@@ -8,7 +8,6 @@ export default function LotteryEntrance() {
     const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
     // These get re-rendered every time due to our connect button!
     const chainId = parseInt(chainIdHex);
-    // console.log(`ChainId is ${chainId}`)
     const deKinoAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
     // State hooks
@@ -19,7 +18,11 @@ export default function LotteryEntrance() {
 
     const dispatch = useNotification();
 
-    const { runContractFunction: enterDeKino, isLoading, isFetching } = useWeb3Contract({
+    const {
+        runContractFunction: enterDeKino,
+        isLoading,
+        isFetching,
+    } = useWeb3Contract({
         abi: abi,
         contractAddress: deKinoAddress,
         functionName: "enterDeKino",
@@ -101,33 +104,41 @@ export default function LotteryEntrance() {
     };
 
     return (
-        <div className="p-5">
+        <div className="flex flex-col justify-center items-center p-5" align="center">
             <h1 className="py-4 px-4 font-bold text-3xl">Lottery</h1>
-            {deKinoAddress ? (
-                <>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-                        onClick={async () =>
-                            await enterDeKino({
-                                // onComplete:
-                                // onError:
-                                onSuccess: handleSuccess,
-                                onError: (error) => console.log(error),
-                            })
-                        }
-                        disabled={isLoading || isFetching}
-                    >
-                        {isLoading || isFetching ? (
-                        <div classname="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
-                        ) : (<div> Enter DeKino </div>)}
-                    </button>
-                    <div>Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH</div>
-                    <div>The current number of players is: {numberOfPlayers}</div>
-                    <div>The most previous winner was: {recentWinner}</div>
-                </>
-            ) : (
-                <div>Please connect to a supported chain </div>
-            )}
+            <div>
+                {deKinoAddress ? (
+                    <>
+                        <button
+                            align="center"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
+                            onClick={async () =>
+                                await enterDeKino({
+                                    // onComplete:
+                                    // onError:
+                                    onSuccess: handleSuccess,
+                                    onError: (error) => console.log(error),
+                                })
+                            }
+                            disabled={isLoading || isFetching}
+                        >
+                            {isLoading || isFetching ? (
+                                <div
+                                    aligb="center"
+                                    className="animate-spin spinner-border h-8 w-8 border-b-2"
+                                ></div>
+                            ) : (
+                                <div> Enter DeKino </div>
+                            )}
+                        </button>
+                        <div>
+                            Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
+                        </div>
+                    </>
+                ) : (
+                    <div>Please connect to a supported chain </div>
+                )}
+            </div>
         </div>
     );
 }
