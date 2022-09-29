@@ -93,34 +93,41 @@ export default function LotteryEntrance() {
 
     return (
         <div className="flex flex-col justify-center items-center p-5 align-center" align="center">
-            <h1 className="text-gray-900 font-bold tracking-wider py-4 px-4 text-2xl">Welcome to DeKino Decentralized Lottery!</h1>
-            {!deKinoState ? (
-                <div>
-                    {numberOfPlayers > 0 ? (
-                        <div className="text-amber-400 font-bold p-12">
-                            <div className="text-lg">
-                                Lottery is Open! <p>Place your entries!</p>
-                            </div>
-                            <div className="text-sm text-gray-800 m-2">Next Lottery : {new Date().getHours() + 1}:00</div>
-                        </div>
-                    ) : (
-                        <div className="text-amber-400 font-bold p-12">No Active Lottery</div>
-                    )}
-                </div>
-            ) : (
-                <div className="m-12">
-                    <div className="text-amber-400 font-bold text-lg p-4 tracking-widest">
-                        Lottery is calculating!!!
-                    </div>
-                    <div className="text-sm">(Chainlink VRF)</div>
-                    <div className="text-amber-200 text-sm">
-                        No entries allowed at this moment...
-                    </div>
-                </div>
-            )}
+            <h1 className="text-gray-900 font-bold tracking-wider py-4 px-4 text-2xl">
+                Welcome to DeKino Decentralized Lottery!
+            </h1>
+
             <div>
                 {deKinoAddress ? (
                     <>
+                        {!deKinoState ? (
+                            <div>
+                                {numberOfPlayers > 0 ? (
+                                    <div className="text-amber-400 font-bold p-12">
+                                        <div className="text-lg">
+                                            Lottery is Open! <p>Place your entries!</p>
+                                        </div>
+                                        <div className="text-sm text-gray-800 m-2">
+                                            Next Lottery : {new Date().getHours() + 1}:00
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-amber-400 font-bold p-12">
+                                        No Active Lottery
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="m-12">
+                                <div className="text-amber-400 font-bold text-lg p-4 tracking-widest">
+                                    Lottery is calculating!!!
+                                </div>
+                                <div className="text-sm">(Chainlink VRF)</div>
+                                <div className="text-amber-200 text-sm">
+                                    No entries allowed at this moment...
+                                </div>
+                            </div>
+                        )}
                         <button
                             align="center"
                             className="bg-lime-400 hover:bg-lime-500 text-brown border-2 border-lime-600 hover:border-lime-500 font-bold py-2 px-4 rounded-full ml-auto"
