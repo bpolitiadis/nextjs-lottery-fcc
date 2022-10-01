@@ -4,17 +4,17 @@ import { abi, contractAddresses } from "../constants";
 import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
 
-export default function LotteryEntrance() {
+export default function Lottery() {
     const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
-    // These get re-rendered every time due to our connect button!
     const chainId = parseInt(chainIdHex);
     const deKinoAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
     // State hooks
-    // https://stackoverflow.com/questions/58252454/react-hooks-using-usestate-vs-just-variables
     const [entranceFee, setEntranceFee] = useState("0");
     const [numberOfPlayers, setNumberOfPlayers] = useState("0");
     const [deKinoState, setDeKinoState] = useState("0");
+    const [recentWinner, setRecentWinner] = useState("0");
+    const [players, setPlayers] = useState([]);
 
     const dispatch = useNotification();
 
@@ -53,20 +53,39 @@ export default function LotteryEntrance() {
         params: {},
     });
 
+    const { runContractFunction: getRecentWinner } = useWeb3Contract({
+        abi: abi,
+        contractAddress: deKinoAddress,
+        functionName: "getRecentWinner",
+        params: {},
+    });
+
     async function updateUIValues() {
-        // Another way we could make a contract call:
-        // const options = { abi, contractAddress: deKinoAddress }
-        // const fee = await Moralis.executeFunction({
-        //     functionName: "getEntranceFee",
-        //     ...options,
-        // })
         const entranceFeeFromCall = (await getEntranceFee()).toString();
         const numPlayersFromCall = (await getPlayersNumber()).toString();
         const deKinoStateFromCall = await getDeKinoState();
+        const recentWinnerFromCall = await getRecentWinner();
         setEntranceFee(entranceFeeFromCall);
         setNumberOfPlayers(numPlayersFromCall);
         setDeKinoState(deKinoStateFromCall);
+        setRecentWinner(recentWinnerFromCall);
+
+        setPlayers((players) => []);
+        for (let i = 0; i < numPlayersFromCall; i++) {
+            let options = {
+                abi: abi,
+                contractAddress: deKinoAddress,
+                functionName: "getPlayer",
+                params: { index: i },
+            };
+            let res = await Moralis.executeFunction(options);
+            setPlayers((players) => [...players, res]);
+        }
     }
+
+    // async function setPlayersArray(){
+
+    // }
 
     useEffect(() => {
         if (isWeb3Enabled) {
@@ -96,10 +115,9 @@ export default function LotteryEntrance() {
             <h1 className="text-gray-900 font-bold tracking-wider py-4 px-4 text-2xl">
                 Welcome to DeKino Decentralized Lottery!
             </h1>
-
             <div>
                 {deKinoAddress ? (
-                    <>
+                    <div>
                         {!deKinoState ? (
                             <div>
                                 {numberOfPlayers > 0 ? (
@@ -153,7 +171,29 @@ export default function LotteryEntrance() {
                         <div>
                             Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH
                         </div>
-                    </>
+                        <div>Last winner was: {recentWinner}</div>
+                        <div>The current number of players is: {numberOfPlayers}</div>
+                        {numberOfPlayers > 0 ? (
+                            <div
+                                className="bg-teal-500 flex-row m-2 p-2 border border-dashed rounded-lg border-teal-900 bg-teal-100"
+                                align="center"
+                            >
+                                <div align="center">Current entries:</div>
+                                <div>
+                                    {players.map((user, index) => (
+                                        <div
+                                            className=" bg-teal-200 border border-teal-800 rounded-md m-4 p-4"
+                                            key={index}
+                                        >
+                                            Entry {index + 1}: {user}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div></div>
+                        )}
+                    </div>
                 ) : (
                     <div>Please connect to a supported chain </div>
                 )}
